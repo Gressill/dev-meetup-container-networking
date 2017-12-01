@@ -78,6 +78,13 @@
   * [OpenFlow tutorial](https://github.com/mininet/openflow-tutorial/wiki)
   * YouTube [Introduction to Mininet](https://www.youtube.com/watch?v=jmlgXaocwiE)
   * YouTube [Mininet Basics Tutorial - Essentials You Need to Know](https://www.youtube.com/watch?v=oPtVYSyN1wE)
+  * [Link modeling using ns-3](https://github.com/mininet/mininet/wiki/Link-modeling-using-ns-3)
+  * [POX tutorial](http://sdnhub.org/tutorials/pox/)
+* [POX](https://github.com/noxrepo/pox) is a python framework
+* [ns-3](https://www.nsnam.org/documentation/) is a C++ framework
+* [Project Floodlight](http://www.projectfloodlight.org/) is a Java framework
+  * [github](https://github.com/floodlight/floodlight)
+* [Cooja](https://github.com/contiki-os/contiki/wiki/An-Introduction-to-Cooja) is a Java framework
 
 ## Network Debugging
 
