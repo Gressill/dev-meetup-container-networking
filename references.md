@@ -71,6 +71,7 @@
   * Webinar: [Docker Networking Fundamentals](http://www.ipspace.net/Docker_Networking_Fundamentals)
 
 * [Nspawn OpenStack with OpenStack-Ansible](https://cloudnull.io/2017/06/nspawning-openstack-ansible/) explains how to use macvlan. It also talks about having file-system barriers between containers.
+  * [Using networkd to set-up the network](https://cloudnull.io/2017/06/networkd-for-nspawn-with-openstack-ansible/)
 
 ## Simulation and Testing
 
