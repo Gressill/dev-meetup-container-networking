@@ -73,6 +73,7 @@
 * [Nspawn OpenStack with OpenStack-Ansible](https://cloudnull.io/2017/06/nspawning-openstack-ansible/) explains how to use macvlan. It also talks about having file-system barriers between containers.
   * [Using networkd to set-up the network](https://cloudnull.io/2017/06/networkd-for-nspawn-with-openstack-ansible/)
   * [macvlan host to guest connection](http://noyaudolive.net/2012/05/09/lxc-and-macvlan-host-to-guest-connection/)
+  * [macvlan and ipvlan](https://sreeninet.wordpress.com/2016/05/29/macvlan-and-ipvlan/)
 
 ## Simulation and Testing
 
