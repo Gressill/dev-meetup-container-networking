@@ -78,3 +78,15 @@
   * [OpenFlow tutorial](https://github.com/mininet/openflow-tutorial/wiki)
   * YouTube [Introduction to Mininet](https://www.youtube.com/watch?v=jmlgXaocwiE)
   * YouTube [Mininet Basics Tutorial - Essentials You Need to Know](https://www.youtube.com/watch?v=oPtVYSyN1wE)
+
+## Linux Network Programming
+
+* Monitoring and Tuning the Linux Networking Stack
+  * [Receiving Data](https://blog.packagecloud.io/eng/2016/06/22/monitoring-tuning-linux-networking-stack-receiving-data/)
+  * [Sending Data](https://blog.packagecloud.io/eng/2017/02/06/monitoring-tuning-linux-networking-stack-sending-data/)
+* [NUSE: Network stack in USerspacE](http://libos-nuse.github.io/)
+  * [github](https://github.com/libos-nuse/net-next-nuse)
+  * [paper](https://people.netfilter.org/pablo/netdev0.1/papers/Library-Operating-System-with-Mainline-Linux-Network-Stack.pdf)
+* Visualizsations of the Linux network flow
+  * [Network data flow through kernel](https://mwiki.static.linuxfound.org/images/1/1c/Network_data_flow_through_kernel.png)
+  * [Paket flow in netfilter and general networking](http://inai.de/images/nf-packet-flow.png)
