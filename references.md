@@ -33,7 +33,8 @@
 * [Thomas Graf](https://github.com/tgraf), [linkedin](https://www.linkedin.com/in/thomas-graf-73104547/?locale=de_DE), [covalent.io](http://covalent.io/), [cilium.io](https://www.cilium.io/)
   * 2015-08-18: [linux-kernel-networking-walkthrough](https://www.slideshare.net/ThomasGraf5/linuxcon-2015-linux-kernel-networking-walkthrough)
   * 2016-08-23: [linux-networking-explained](https://www.slideshare.net/ThomasGraf5/linux-networking-explained)
-
+* [Container Networking Deep Dive](http://events.linuxfoundation.org/sites/events/files/slides/Container%20Networking%20Deep%20Dive.pdf)
+* [Demystifying container networking](http://blog.mbrt.it/2017-10-01-demystifying-container-networking/)
 
 ## vxlan, veth, bridges, namespaces, L2, L3, etc.
 
