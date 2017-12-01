@@ -70,6 +70,7 @@
   * Webinar: [Leaf-and-Spine Fabric Architectures](http://www.ipspace.net/Leaf-and-Spine_Fabric_Architectures)
   * Webinar: [Docker Networking Fundamentals](http://www.ipspace.net/Docker_Networking_Fundamentals)
 
+* [Nspawn OpenStack with OpenStack-Ansible](https://cloudnull.io/2017/06/nspawning-openstack-ansible/) explains how to use macvlan. It also talks about having file-system barriers between containers.
 
 ## Simulation and Testing
 
