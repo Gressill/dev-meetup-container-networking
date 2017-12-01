@@ -79,6 +79,22 @@
   * YouTube [Introduction to Mininet](https://www.youtube.com/watch?v=jmlgXaocwiE)
   * YouTube [Mininet Basics Tutorial - Essentials You Need to Know](https://www.youtube.com/watch?v=oPtVYSyN1wE)
 
+## Network Debugging
+
+* IPTables
+  * [iptables-fundamentals](http://www.thegeekstuff.com/2011/01/iptables-fundamentals)
+    * Also look at `man iptables-extensions`
+  * [iptables-debugging](http://backreference.org/2010/06/11/iptables-debugging/)
+    * Use `iptables-save` to see the complete picture.
+    * [How to Enable IPtables TRACE Target](https://serverfault.com/a/739411): on newer Linux systems like Ubuntu 16.04 you have to execute `modprobe nf_log_ipv4` (and perhaps `sysctl net.netfilter.nf_log.2=nf_log_ipv4`; was not necessary for me) in order to see the TRACE logs in `/var/log/syslog`.
+      * [more info](https://www.centos.org/forums/viewtopic.php?f=47&t=54411)
+    * [Routing problem with mangle table on Ubuntu 16.04](https://forum.level1techs.com/t/routing-problem-with-mangle-table-on-ubuntu-16-04/114736/2)
+      * `echo 1 > /proc/sys/net/ipv4/conf/all/log_martians`
+      * `echo 2 > /proc/sys/net/ipv4/conf/tun0/rp_filter`
+      * [ip-sysctl.txt](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt)
+  * [Controlling what logs where with rsyslog.conf](http://www.the-art-of-web.com/system/rsyslog-config/)
+* [Intro to tcpdump](https://forum.ivorde.com/tcpdump-how-to-to-capture-only-icmp-ping-echo-requests-t15191.html)
+
 ## Linux Network Programming
 
 * Monitoring and Tuning the Linux Networking Stack
