@@ -81,3 +81,15 @@ You can execute:
     source proxy_external.sh
 
 To set the `http_proxy` and other environment variables if you want to use a command line tool that relies on these variables and you're behind a corporate proxy. The script `proxy_local.sh` does the same, but uses the locally installed and running instance of `tinyproxy` that is configured to do local requests locally and remote requests remotely.
+
+## Deep Dive in Docker Overlay Networks
+
+This example is following relatively closely the presentation given by [Laurent Bernaille](https://github.com/lbernail). He also published a 3 part blog post series describing his presentation:
+
+* 2017-05-08: [Deep Dive in Docker Overlay Networks](https://www.youtube.com/watch?v=b3XDl0YsVsg) YouTube presentation by
+  * [github](https://github.com/lbernail/dockeroverlays)
+  * 2017-04-25: [Part 1](http://techblog.d2-si.eu/2017/04/25/deep-dive-into-docker-overlay-networks-part-1.html)
+  * 2017-05-09: [Part 2](http://techblog.d2-si.eu/2017/05/09/deep-dive-into-docker-overlay-networks-part-2.html)
+  * 2017-08-20: [Part 3](http://techblog.d2-si.eu/2017/08/20/deep-dive-into-docker-overlay-networks-part-3.html)
+
+I deviate from his presentation where I feel that it makes the whole topic more clear and I mix his approach with approaches from other people. You can find a full list of high value references in the separate [references](./references.md) page.
