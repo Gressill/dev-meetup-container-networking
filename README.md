@@ -55,7 +55,29 @@ This will take some minutes, mostly depending on your speed of your internet con
 Next you will have to install [consul](https://www.consul.io) and create the docker overlay set-up:
 
     ansible-playbook 11-consul.yml
+    ansible-playbook 12-docker-overlay-setup.yml
 
+Docker in the past required a key value store like `consul` or `etcd` for its overlay network set-up, but in current versions this is not required any longer. This is still supported and we use it to gain some transparency into the data-structures docker uses do manage the network infrastructure in the cluster. We mainly profit from the [consul web ui](https://www.consul.io/intro/getting-started/ui.html) that is part of the `consul` binary itself. Otherwise we could have also used `etcd`
+
+After that you should reboot the cluster:
+
+    vagrant halt
+    vagrant up
+
+And after logging in to both nodes check that systemd started without problems:
+
+    systemctl status
+    systemctl --failed
+
+Now your cluster is ready for our first experiments.
+
+The set-up created 2 scripts in the `~vagrant` home directory:
 
 * proxy_external.sh
 * proxy_local.sh
+
+You can execute:
+
+    source proxy_external.sh
+
+To set the `http_proxy` and other environment variables if you want to use a command line tool that relies on these variables and you're behind a corporate proxy. The script `proxy_local.sh` does the same, but uses the locally installed and running instance of `tinyproxy` that is configured to do local requests locally and remote requests remotely.

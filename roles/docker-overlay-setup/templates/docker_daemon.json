@@ -1,0 +1,10 @@
+{
+  "log-driver": "json-file",
+  "max-concurrent-downloads": 10,
+  "log-opts": {
+    "max-size": "10m"
+  },
+  "hosts": [ "fd://", "tcp://0.0.0.0:2375"],
+  "cluster-store": "consul://{{ hostvars[groups['etcd_nodes'][0]].ansible_host }}:8500",
+  "cluster-advertise": "eth1:2376"
+}

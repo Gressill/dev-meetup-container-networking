@@ -1,0 +1,28 @@
+---
+
+- name: docker | Replace the startup command for Docker
+  lineinfile:
+    dest: /lib/systemd/system/docker.service
+    regexp: '^ExecStart'
+    line: 'ExecStart=/usr/bin/dockerd'
+    state: present
+  register: result_service
+
+- name: docker | Update docker service startup
+  template: src=docker_daemon.json dest=/etc/docker/daemon.json
+  register: result
+  notify:
+    - restart docker
+
+- name: docker | set proxy | create directory
+  file: path=/etc/systemd/system/docker.service.d state=directory mode=0755 recurse=yes
+  when: not((lookup('env','http_proxy') is undefined) or (lookup('env','http_proxy') is none) or (lookup('env','http_proxy') | trim == ''))
+
+- name: docker | set proxy | create file
+  template: src=docker-service-d-http-proxy.conf dest=/etc/systemd/system/docker.service.d/http-proxy.conf
+  notify:
+    - restart docker
+  when: not((lookup('env','http_proxy') is undefined) or (lookup('env','http_proxy') is none) or (lookup('env','http_proxy') | trim == ''))
+
+- name: docker | restart docker
+  systemd: name=docker enabled=yes state=restarted daemon_reload=yes

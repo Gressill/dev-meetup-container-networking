@@ -1,0 +1,11 @@
+---
+- name: Setup etcd cluster
+  hosts: nodes
+  gather_facts: yes
+  vars_files:
+    - config.yml
+
+  roles:
+    - role: docker-overlay-setup
+  become: true
+  become_method: sudo
