@@ -105,3 +105,22 @@ In each node of the cluster execute the following:
     docker load -i /vagrant/net-tools.tar
 
 This works, because vagrant is mounting the current directory of the external machine to `/vagrant` and the saved `net-tools.tar` from the previous step is accessible inside of your cluster nodes.
+
+### Monitoring the network stack events
+
+The following steps are not exactly required, but they help you to understand what is going on. I suggest you create a set of 3 root shells (the commands have to be executed as root) on node1 (one node is enough). You can do this as you like, but I also would suggest you try the [tmux](https://gist.github.com/MohamedAlaa/2961058) terminal multiplexer, so that you can see all events at the same time. Execute in each shell the following:
+
+Shell 1:
+
+    ip monitor link
+
+
+Shell 2:
+
+    ip monitor route
+
+
+Shell 3:
+
+    echo 1 | sudo tee -a /proc/sys/net/ipv4/neigh/eth0/app_solicit
+    ip monitor neigh
