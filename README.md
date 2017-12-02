@@ -44,7 +44,7 @@ After starting the 2-node cluster try to login. At the top of the Vagrant file y
     # ssh-add ~/.vagrant.d/insecure_private_key
     # ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no vagrant@192.168.56.101
 
-The first node will get IP address `192.168.56.101` and the second node will get IP address `192.168.56.101`. You will only have to add once the ssh key and afterwards you can login without password. I suggest you login into both nodes before you continue. Sometimes the booting process takes a bit longer and the next steps will fail if the ssh login does not work.
+The first node will get IP address `192.168.56.101` and the second node will get IP address `192.168.56.102`. You will only have to add once the ssh key and afterwards you can login without password. I suggest you login into both nodes before you continue. Sometimes the booting process takes a bit longer and the next steps will fail if the ssh login does not work.
 
 The next step is to install the base system via:
 
@@ -93,3 +93,15 @@ This example is following relatively closely the presentation given by [Laurent 
   * 2017-08-20: [Part 3](http://techblog.d2-si.eu/2017/08/20/deep-dive-into-docker-overlay-networks-part-3.html)
 
 I deviate from his presentation where I feel that it makes the whole topic more clear and I mix his approach with approaches from other people. You can find a full list of high value references in the separate [references](./references.md) page.
+
+### Creating the test docker image
+
+In order to test our set-up we'll use a test docker image that you create by typing `make` in the `dev-meetup-container-networking` directory. If you're behind a coporate proxy you need to first execute `source proxy_external.sh` and then execute `make`. This will also create a saved docker image with the file name `net-tools.tar` in the local directory. Have a look in the `./docker-net-tools-image/Dockerfile` to see what the image does. The main purpose is to run an apache httpd that you can talk to on port 80 and the image also comes with several tools that help you to examine the network set-up inside of the container.
+
+#### Import the test docker image in each node instance
+
+In each node of the cluster execute the following:
+
+    docker load -i /vagrant/net-tools.tar
+
+This works, because vagrant is mounting the current directory of the external machine to `/vagrant` and the saved `net-tools.tar` from the previous step is accessible inside of your cluster nodes.
