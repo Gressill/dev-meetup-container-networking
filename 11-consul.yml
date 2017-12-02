@@ -1,0 +1,46 @@
+---
+- name: Setup consul cluster
+  hosts: etcd_nodes
+  gather_facts: yes
+  vars_files:
+    - config.yml
+
+  pre_tasks:
+    - name: gather consul peers
+      set_fact:
+        consul_peer_ips: "[{% for item in groups['etcd_nodes'] %}'{{ hostvars[item].ansible_host }}',{% endfor %}]"
+
+  # https://www.consul.io/intro/getting-started/ui.html
+  # http://192.168.56.101:8500/ui
+  # consul kv get -recurse
+  # curl -s GET http://192.168.56.101:8500/v1/kv/k1  | jq -r '.[0].Value' | base64 --decode
+  roles:
+    - role: suzuki-shunsuke.hashicorp-binary
+      hashicorp_binary_name: consul
+      hashicorp_binary_arch: linux_amd64
+      hashicorp_binary_version: 1.0.1
+
+    # https://www.consul.io/docs/agent/options.html#configuration_files
+    - role: suzuki-shunsuke.consul
+      consul_enabled: yes
+      consul_config:
+        retry_join: "{{ consul_peer_ips }}"
+        node_name: "{{ansible_hostname}}"
+        bootstrap_expect: 1
+        server: true
+        data_dir: /tmp/consul
+        bind_addr: "{{ hostvars[ansible_hostname].ansible_host }}"
+        client_addr: "{{ hostvars[ansible_hostname].ansible_host }}"
+        ui: true
+        log_level: DEBUG
+
+  become: true
+  become_method: sudo
+
+  post_tasks:
+    - name: Add CONSUL_HTTP_ADDR to .bashrc
+      lineinfile:
+        dest: "/home/vagrant/.bashrc"
+        state: present
+        line: "export CONSUL_HTTP_ADDR=http://{{ hostvars[ansible_hostname].ansible_host }}:8500"
+        insertafter: "EOF"

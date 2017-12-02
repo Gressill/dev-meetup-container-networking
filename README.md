@@ -54,7 +54,7 @@ This will take some minutes, mostly depending on your speed of your internet con
 
 Next you will have to install [consul](https://www.consul.io) and create the docker overlay set-up:
 
-    ansible-playbook 
+    ansible-playbook 11-consul.yml
 
 
 * proxy_external.sh

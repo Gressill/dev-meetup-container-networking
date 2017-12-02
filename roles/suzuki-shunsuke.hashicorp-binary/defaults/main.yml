@@ -1,0 +1,4 @@
+---
+# defaults file for hashicorp-binary
+hashicorp_binary_bin_dir: /usr/local/bin
+hashicorp_binary_lib_dir: /usr/local/lib
