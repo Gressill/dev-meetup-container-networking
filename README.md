@@ -45,3 +45,17 @@ After starting the 2-node cluster try to login. At the top of the Vagrant file y
     # ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no vagrant@192.168.56.101
 
 The first node will get IP address `192.168.56.101` and the second node will get IP address `192.168.56.101`. You will only have to add once the ssh key and afterwards you can login without password. I suggest you login into both nodes before you continue. Sometimes the booting process takes a bit longer and the next steps will fail if the ssh login does not work.
+
+The next step is to install the base system via:
+
+    ansible-playbook 10-setup.yml
+
+This will take some minutes, mostly depending on your speed of your internet connection.
+
+Next you will have to install [consul](https://www.consul.io) and create the docker overlay set-up:
+
+    ansible-playbook 
+
+
+* proxy_external.sh
+* proxy_local.sh

@@ -1,0 +1,6 @@
+export HTTP_PROXY="{{ profile_proxy }}"
+export http_proxy="{{ profile_proxy }}"
+export HTTPS_PROXY="{{ profile_proxy }}"
+export https_proxy="{{ profile_proxy }}"
+export NO_PROXY="localhost,127.0.0.1"
+export no_proxy="localhost,127.0.0.1"

@@ -1,0 +1,153 @@
+
+# http://docs.ansible.com/ansible/latest/sysctl_module.html
+
+- sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    state: present
+
+- sysctl:
+    name: net.ipv4.conf.all.rp_filter
+    value: 0
+    state: present
+
+- sysctl:
+    name: net.ipv4.conf.default.rp_filter
+    value: 0
+    state: present
+
+- sysctl:
+    name: net.ipv6.conf.all.disable_ipv6
+    value: 1
+    state: present
+
+- sysctl:
+    name: net.ipv6.conf.default.disable_ipv6
+    value: 1
+    state: present
+
+- sysctl:
+    name: net.ipv6.conf.lo.disable_ipv6
+    value: 1
+    state: present
+
+- sysctl:
+    name: net.ipv4.tcp_mem
+    value: "182757 243679 365514"
+    state: present
+
+- sysctl:
+    name: net.core.netdev_max_backlog
+    value: 182757
+    state: present
+
+- sysctl:
+    name: net.ipv4.conf.eth0.proxy_arp
+    value: 1
+    state: present
+
+- sysctl:
+    name: fs.inotify.max_queued_events
+    value: 1048576
+    state: present
+
+- sysctl:
+    name: fs.inotify.max_user_instances
+    value: 1048576
+    state: present
+
+- sysctl:
+    name: fs.inotify.max_user_watches
+    value: 1048576
+    state: present
+
+- sysctl:
+    name: vm.max_map_count
+    value: 262144
+    state: present
+
+- sysctl:
+    name: kernel.dmesg_restrict
+    value: 0
+    state: present
+
+- name: make sure that module nf_conntrack_ipv4 is loaded after reboot
+  lineinfile:
+    dest: "/etc/modules"
+    state: present
+    line: "nf_conntrack_ipv4"
+    insertafter: "EOF"
+
+- name: make sure that module nf_conntrack_ipv4 is loaded now
+  modprobe:
+    name: nf_conntrack_ipv4
+    state: present
+
+- sysctl:
+    name: net.netfilter.nf_conntrack_max
+    value: 1000000
+    state: present
+
+# https://serverfault.com/a/739411
+- name: make sure that module nf_log_ipv4 is loaded after reboot
+  lineinfile:
+    dest: "/etc/modules"
+    state: present
+    line: "nf_log_ipv4"
+    insertafter: "EOF"
+
+- name: make sure that module nf_log_ipv4 is loaded now
+  modprobe:
+    name: nf_log_ipv4
+    state: present
+
+- sysctl:
+    name: net.netfilter.nf_log.2
+    value: nf_log_ipv4
+    state: present
+
+# http://docs.ansible.com/ansible/latest/pam_limits_module.html
+- pam_limits:
+    domain: "*"
+    limit_type: soft
+    limit_item: nofile
+    value: 1048576
+
+- pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: nofile
+    value: 1048576
+
+- pam_limits:
+    domain: root
+    limit_type: soft
+    limit_item: nofile
+    value: 1048576
+
+- pam_limits:
+    domain: root
+    limit_type: hard
+    limit_item: nofile
+    value: 1048576
+
+- pam_limits:
+    domain: "*"
+    limit_type: soft
+    limit_item: memlock
+    value: unlimited
+
+- pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: memlock
+    value: unlimited
+
+- shell: 'echo "y" | sudo tee /sys/module/fuse/parameters/userns_mounts'
+  changed_when: False
+- shell: 'echo "y" | sudo tee /sys/module/ext4/parameters/userns_mounts'
+  changed_when: False
+
+- name: enable memory cgroup in GRUB
+  lineinfile: dest=/etc/default/grub regexp='^GRUB_CMDLINE_LINUX_DEFAULT' line='GRUB_CMDLINE_LINUX_DEFAULT="quiet net.ifnames=0 biosdevname=0 cgroup_enable=memory swapaccount=1"' backup=yes
+  notify: update grub

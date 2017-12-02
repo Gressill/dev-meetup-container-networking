@@ -1,0 +1,20 @@
+- name: Install Tinyproxy for web access
+  apt:
+    update_cache=yes
+    pkg=tinyproxy
+    force=yes
+    state=present
+
+- name: Setup Tinyproxy Config file
+  template:
+    src=../templates/tinyproxy.conf.j2
+    dest=/etc/tinyproxy.conf
+  notify:
+    - restart tinyproxy
+
+- name: Ensure Tinyproxy is running
+  service:
+    enabled=yes
+    name=tinyproxy
+    state=started
+  changed_when: False

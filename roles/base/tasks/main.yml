@@ -1,0 +1,38 @@
+---
+
+- name: generate de_DE.UTF-8
+  locale_gen:
+    name: de_DE.UTF-8
+    state: present
+
+- name: Create bin directory
+  file:
+    path: /home/vagrant/bin
+    state: directory
+    owner: vagrant
+    group: vagrant
+    recurse: yes
+  become: true
+
+- name: Add sysctl performance settings
+  import_tasks: sysctl.yml
+
+- name: Add and update packages
+  import_tasks: apt.yml
+
+- name: install tinyproxy
+  import_tasks: tinyproxy.yml
+  tags:
+    - tinyproxy
+
+- name: install http proxy env profile
+  template: src=profile-proxy.sh dest=/home/vagrant/proxy_external.sh owner=vagrant group=vagrant mode=0755
+
+- name: install http proxy env profile
+  template: src=proxy_local.sh dest=/home/vagrant/proxy_local.sh owner=vagrant group=vagrant mode=0755
+
+- name: Setup system parameters (boot, hosts, timzone)
+  import_tasks: system.yml
+
+- name: Setup docker
+  import_tasks: docker.yml

@@ -1,0 +1,44 @@
+
+- name: Setup profile
+  copy: src=docker_profile.sh dest=/etc/profile.d/docker.sh mode=0644
+
+- name: ensure docker HTTP
+  lineinfile:
+    path: /etc/default/docker
+    regexp: '^HTTP_PROXY='
+    line: "HTTP_PROXY={{ lookup('env','http_proxy') }}"
+  when: not((lookup('env','http_proxy') is undefined) or (lookup('env','http_proxy') is none) or (lookup('env','http_proxy') | trim == ''))
+  notify: restart docker
+
+- name: ensure docker http
+  lineinfile:
+    path: /etc/default/docker
+    regexp: '^http_proxy='
+    line: "http_proxy={{ lookup('env','http_proxy') }}"
+  when: not((lookup('env','http_proxy') is undefined) or (lookup('env','http_proxy') is none) or (lookup('env','http_proxy') | trim == ''))
+  notify: restart docker
+
+- name: docker | Replace the startup command for Docker
+  lineinfile:
+    dest: /lib/systemd/system/docker.service
+    regexp: '^ExecStart'
+    line: 'ExecStart=/usr/bin/dockerd'
+    state: present
+  register: result_service
+
+- name: docker | Update docker service startup
+  template: src=docker_daemon.json dest=/etc/docker/daemon.json
+  register: result
+  notify:
+    - restart docker
+
+- name: docker | set proxy | create directory
+  file: path=/etc/systemd/system/docker.service.d state=directory mode=0755 recurse=yes
+  when: not((lookup('env','http_proxy') is undefined) or (lookup('env','http_proxy') is none) or (lookup('env','http_proxy') | trim == ''))
+
+# systemctl show --property=Environment docker
+- name: docker | set proxy | create file
+  template: src=docker-service-d-http-proxy.conf dest=/etc/systemd/system/docker.service.d/http-proxy.conf
+  notify:
+    - restart docker
+  when: not((lookup('env','http_proxy') is undefined) or (lookup('env','http_proxy') is none) or (lookup('env','http_proxy') | trim == ''))

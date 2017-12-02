@@ -1,0 +1,11 @@
+---
+# handlers file for base
+- name: restart tinyproxy
+  become: yes
+  service: name=tinyproxy state=restarted
+
+- name: update grub
+  command: update-grub
+
+- name: restart docker
+  systemd: name=docker enabled=yes state=restarted daemon_reload=yes

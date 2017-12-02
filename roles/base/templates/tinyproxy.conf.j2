@@ -1,0 +1,64 @@
+User nobody
+Group nogroup
+
+Listen {{ tinyproxy_listen_address }}
+Port {{ tinyproxy_port }}
+
+Timeout 600
+
+DefaultErrorFile "/usr/share/tinyproxy/default.html"
+
+StatFile "/usr/share/tinyproxy/stats.html"
+
+Logfile "/var/log/tinyproxy/tinyproxy.log"
+
+LogLevel {{ tinyproxy_log_level }}
+
+PidFile "/var/run/tinyproxy/tinyproxy.pid"
+
+MaxClients {{ tinyproxy_maxclients }}
+
+MinSpareServers {{ tinyproxy_minspare_servers }}
+MaxSpareServers {{ tinyproxy_maxspare_servers }}
+
+StartServers {{ tinyproxy_startservers }}
+
+MaxRequestsPerChild {{ tinyproxy_maxrequest }}
+
+{% if tinyproxy_allowed_subnet != '0.0.0.0' %}
+Allow 127.0.0.1
+Allow {{ tinyproxy_allowed_subnet }}
+{% endif %}
+
+{% if tinyproxy_denied_subnet is defined %}
+Deny {{ tinyproxy_denied_subnet }}
+{% endif %}
+
+{% if tinyproxy_filtering is defined %}
+Filter {{ tinyproxy_filtering.filter }}
+FilterURLs {{ tinyproxy_filtering.urls }}
+FilterExtended {{ tinyproxy_filtering.extended }}
+FilterCaseSensitive {{ tinyproxy_filtering.case_sensitive }}
+FilterDefaultDeny {{ tinyproxy_filtering.default_deny }}
+{% endif %}
+
+{% if tinyproxy_upstream_proxies is defined %}
+{% for proxy in tinyproxy_upstream_proxies %}
+{% if not((proxy.address is undefined) or (proxy.address is none) or (proxy.address | trim == '')) %}
+Upstream {{ proxy.address }} {% if proxy.url is defined %} {{ proxy.url }} {% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+no upstream "10.0.0.0/8"
+no upstream "172.16.0.0/12"
+no upstream "192.168.0.0/16"
+no upstream ".box"
+no upstream "localhost"
+no upstream "127.0.0.0/16"
+no upstream "."
+
+ViaProxyName "tinyproxy"
+
+ConnectPort 443
+ConnectPort 563

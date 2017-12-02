@@ -1,0 +1,129 @@
+
+- name: Setup apt lean
+  template: src=apt_lean.j2 dest=/etc/apt/apt.conf.d/01lean
+
+- name: Setup apt proxy
+  template: src=apt_cache.j2 dest=/etc/apt/apt.conf.d/01proxy
+  when: not((lookup('env','http_proxy') is undefined) or (lookup('env','http_proxy') is none) or (lookup('env','http_proxy') | trim == ''))
+
+- name: Add apt-transport-https
+  apt:
+    name: 'apt-transport-https'
+    state: present
+    force: yes
+
+- name: Add Docker Repo Key download file
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /tmp/docker-apt-key.gpg
+  environment:
+    http_proxy: "{{ lookup('env','http_proxy') }}"
+    https_proxy: "{{ lookup('env','https_proxy') }}"
+
+- name: Add Docker Repo Key by file
+  apt_key: file=/tmp/docker-apt-key.gpg
+
+- name: Add Docker Repo
+  apt_repository: repo='deb [arch=amd64] http://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable' state=present
+
+- name: Update APT package cache and upgrade
+  apt:
+    update_cache: yes
+    autoremove: yes
+    upgrade: yes
+
+- name: Install aptitude
+  apt:
+    name: "{{ item }}"
+    force: yes
+    state: present
+  with_items:
+    - aptitude
+
+- name: Install Packages from backports
+  apt:
+    name: "{{ item }}"
+    force: yes
+    state: present
+    default_release: "{{ ansible_distribution_release }}-backports"
+  with_items:
+    - lxd
+    - lxd-client
+    - bridge-utils
+    - dnsmasq
+    - thin-provisioning-tools
+    - curl
+    - "linux-image-extra-{{ ansible_kernel }}"
+    - linux-image-extra-virtual
+    - apt-transport-https
+    - ca-certificates
+    - software-properties-common
+    - docker-ce
+    - python-setuptools
+    - python-pip
+    - build-essential
+    - python-dev
+    - nfs-kernel-server
+    - nfs-common
+    - aufs-tools
+    - ntp
+
+- name: Ensure backports are used
+  shell: 'apt-get install --yes --quiet --target-release={{ ansible_distribution_release }}-backports lxd lxd-client bridge-utils dnsmasq thin-provisioning-tools curl linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates software-properties-common docker-ce python-setuptools python-pip build-essential python-dev nfs-kernel-server nfs-common aufs-tools ntp'
+  changed_when: False
+  environment:
+    DEBIAN_FRONTEND: "noninteractive"
+
+- name: Install Packages
+  apt:
+    name: "{{ item }}"
+    force: yes
+    state: present
+  with_items:
+    - hdparm
+    - iperf
+    - mtr-tiny
+    - bridge-utils
+    - socat
+    - jq
+    - emacs-nox
+    - wajig
+    - conntrack
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+  environment:
+    http_proxy: "{{ lookup('env','http_proxy') }}"
+    https_proxy: "{{ lookup('env','https_proxy') }}"
+
+- name: Pip uninstall docker-py
+  pip:
+    name: docker
+    state: absent
+  environment:
+    http_proxy: "{{ lookup('env','http_proxy') }}"
+    https_proxy: "{{ lookup('env','https_proxy') }}"
+
+- name: Pip install docker
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - docker
+    - pyroute2
+    - python-consul
+  environment:
+    http_proxy: "{{ lookup('env','http_proxy') }}"
+    https_proxy: "{{ lookup('env','https_proxy') }}"
+
+- name: Adding vagrant to group lxd
+  user: name=vagrant
+        groups=lxd
+        append=yes
+
+- name: Adding vagrant to group docker
+  user: name=vagrant
+        groups=docker
+        append=yes

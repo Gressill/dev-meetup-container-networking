@@ -1,0 +1,9 @@
+node1 ansible_host=192.168.56.101 ansible_port=22
+node2 ansible_host=192.168.56.102 ansible_port=22
+
+[nodes]
+node1
+node2
+
+[etcd_nodes]
+node1
