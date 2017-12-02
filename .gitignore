@@ -1,0 +1,5 @@
+.vagrant
+*.box
+*.retry
+run/*
+*.tar
