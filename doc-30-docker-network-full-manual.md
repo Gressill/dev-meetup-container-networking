@@ -34,7 +34,7 @@ Node2:
 
 The following picture will explain the vxlan options:
 
-![vxlan-options](./vxlan-options.png)
+![vxlan-options](./img-vxlan-options.png)
 
 Up to now we did not do anything to the container itself. As a next step we have to attach the container via a `veth` to the network infrastructure we just created. This is done by the script `manual-net-config.sh/020-attach-ctn.sh`. This script takes two parameters, the container name and a single digit number. The script will use this single digit number for the container IP address and the ethernet address for the interface. Have a look at the script then execute:
 

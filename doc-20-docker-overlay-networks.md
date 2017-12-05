@@ -290,4 +290,4 @@ With the following two commands we look at the forwarding database of the links 
 
 This finally leaves us at the following picture that I've taken from the [slides](https://www.slideshare.net/lbernail/deep-dive-in-docker-overlay-networks) from [Laurent Bernaille](https://github.com/lbernail)'s presentation.
 
-![docker-overlay-network-between-two-containers](./docker-overlay-network-between-two-containers.png)
+![docker-overlay-network-between-two-containers](./img-docker-overlay-network-between-two-containers.png)
