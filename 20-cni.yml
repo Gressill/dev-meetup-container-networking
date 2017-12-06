@@ -1,0 +1,11 @@
+- name: Setup cni
+  hosts: nodes
+  gather_facts: yes
+  vars_files:
+    - config.yml
+
+  roles:
+    - role: containernetworking.cni
+
+  # become: true
+  become_method: sudo

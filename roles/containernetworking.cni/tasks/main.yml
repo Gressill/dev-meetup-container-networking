@@ -1,0 +1,77 @@
+---
+# tasks file for containernetworking.cni
+- name: Create cni bin directory
+  file:
+    path: /home/vagrant/bin
+    state: directory
+    owner: vagrant
+    group: vagrant
+    recurse: yes
+  become: true
+
+- name: Create cni bin directory
+  file:
+    path: "/home/vagrant/bin/{{ cni_base_name }}"
+    state: directory
+
+- name: check whether the file is already downloaded
+  stat:
+    path: "/home/vagrant/{{ cni_base_name }}.tgz"
+  register: cni_tgz
+
+- name: Downloading official cni release
+  get_url:
+    url: "https://github.com/containernetworking/cni/releases/download/v{{ cni_version }}/{{ cni_base_name }}.tgz"
+    dest: "/home/vagrant/{{ cni_base_name }}.tgz"
+    mode: 0644
+  when: not cni_tgz.stat.exists
+  environment:
+    http_proxy: "{{ lookup('env','http_proxy') }}"
+    https_proxy: "{{ lookup('env','https_proxy') }}"
+
+- name: check whether the plugins are already downloaded
+  stat:
+    path: "/home/vagrant/{{ cni_plugins_base_name }}.tgz"
+  register: cni_plugins_tgz
+
+- name: Downloading official cni release plugins
+  get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/v{{ cni_version }}/{{ cni_plugins_base_name }}.tgz"
+    dest: "/home/vagrant/{{ cni_plugins_base_name }}.tgz"
+    mode: 0644
+  when: not cni_plugins_tgz.stat.exists
+  environment:
+    http_proxy: "{{ lookup('env','http_proxy') }}"
+    https_proxy: "{{ lookup('env','https_proxy') }}"
+
+- name: Unarchive downloaded cni file
+  unarchive:
+    src: "/home/vagrant/{{ cni_base_name }}.tgz"
+    dest: "/home/vagrant/bin/{{ cni_base_name }}"
+    remote_src: yes
+    creates: "/home/vagrant/bin/{{ cni_base_name }}/cnitool"
+
+- name: Unarchive downloaded plugins file
+  unarchive:
+    src: "/home/vagrant/{{ cni_plugins_base_name }}.tgz"
+    dest: "/home/vagrant/bin/{{ cni_base_name }}"
+    remote_src: yes
+    creates: "/home/vagrant/bin/{{ cni_base_name }}/macvlan"
+
+- name: link cni directory
+  file:
+    src: "/home/vagrant/bin/{{ cni_base_name }}"
+    dest: /home/vagrant/bin/cni
+    state: link
+
+- name: Add cni to the path to .bashrc
+  lineinfile:
+    dest: "/home/vagrant/.bashrc"
+    state: present
+    line: "export PATH=/home/vagrant/bin/cni:$PATH"
+    insertafter: "EOF"
+
+- name: generate cni_bridge.conf
+  template:
+    src: cni_bridge.conf
+    dest: /home/vagrant/cni_bridge.conf

@@ -1,0 +1,5 @@
+---
+# defaults file for containernetworking.cni
+cni_version: 0.6.0
+cni_base_name: cni-amd64-v{{ cni_version }}
+cni_plugins_base_name: cni-plugins-amd64-v{{ cni_version }}
