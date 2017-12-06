@@ -1,0 +1,13 @@
+# calicoctl get profiles -o yaml # > calico-profile.yml
+# calicoctl apply -f calico-profile.yml
+- apiVersion: v1
+  kind: profile
+  metadata:
+    name: calico-net1
+    tags:
+    - calico-net1
+  spec:
+    egress:
+    - action: allow
+    ingress:
+    - action: allow

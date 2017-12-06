@@ -1,0 +1,5 @@
+---
+# defaults file for calico
+#calicoctl_version: v2.0.0-beta1
+calicoctl_version: v1.6.2
+calico_cluster_cidr: 10.1.0.0/16

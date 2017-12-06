@@ -1,0 +1,19 @@
+- name: Setup calico
+  hosts: nodes
+  gather_facts: yes
+  vars_files:
+    - config.yml
+
+  roles:
+    - role: calico
+
+  # become: true
+  become_method: sudo
+
+  post_tasks:
+    - name: Add etcd ETCD_ENDPOINTS to .bashrc
+      lineinfile:
+        dest: "/home/vagrant/.bashrc"
+        state: present
+        line: "export ETCD_ENDPOINTS={%- for host in groups['etcd_nodes'] -%}http://{{ hostvars[host].ansible_host }}:2379{% if not loop.last %},{% endif %}{%- endfor -%}"
+        insertafter: "EOF"

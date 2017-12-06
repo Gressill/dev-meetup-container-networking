@@ -1,0 +1,105 @@
+---
+# hostvars[item].ansible_host
+# - name: test
+#   hosts: nodes
+#   gather_facts: no
+#   vars_files:
+#     - config.yml
+#   tasks:
+#     - name: a
+#       set_fact:
+#         host_list1: "[{% for item in groups['nodes'] %}'{{ hostvars[item].ansible_host }}',{% endfor %}]" # "{{ admin_accounts | selectattr('state', 'equalto', 'present') | map(attribute='name') | join(', ') }}"
+#     - name: b1
+#       set_fact:
+#         host_list2: ""
+#     - name: b
+#       set_fact:
+#         host_list2: "{{ host_list2 }} + [ {{ hostvars[item].ansible_host }}]"
+#       with_items: "{{ groups['nodes'] }}"
+#     - debug:
+#         msg: "{{ host_list1 }}" # "{{ groups['nodes'] | list }}"
+#       run_once: true
+#       delegate_to: localhost
+#
+- name: Setup etcd cluster
+  hosts: etcd_nodes
+  gather_facts: yes
+  vars_files:
+    - config.yml
+
+  pre_tasks:
+    - name: gather etcd peers
+      set_fact:
+        etcd_peer_ips: "[{% for item in groups['etcd_nodes'] %}'{{ hostvars[item].ansible_host }}',{% endfor %}]"
+    # - name: etcd_peers
+    #   debug: msg="{{ etcd_peer_ips }}"
+    #   run_once: true
+    #   delegate_to: localhost
+
+  roles:
+    - role: githubixx.etcd
+  become: true
+  become_method: sudo
+    # - role: indigo-dc.etcd
+    #   etcd_peers: "{{ groups['etcd_nodes'] }}"
+  # environment:
+  #   http_proxy: "{{ lookup('env','http_proxy') }}"
+  #   https_proxy: "{{ lookup('env','https_proxy') }}"
+
+  # ETCDCTL_API=3 etcdctl --endpoints http://192.168.56.101:2379 get --prefix=true ""
+  post_tasks:
+    - name: Create $HOME/bin directory
+      file: path=/home/vagrant/bin state=directory mode=0755 recurse=yes
+
+    - name: Add directory to .bashrc
+      lineinfile:
+        dest: "/home/vagrant/.bashrc"
+        state: present
+        line: "export PATH=/home/vagrant/bin:$PATH"
+        insertafter: "EOF"
+
+    - name: Add etcd APIv3 to .bashrc
+      lineinfile:
+        dest: "/home/vagrant/.bashrc"
+        state: present
+        line: "export ETCDCTL_API=3"
+        insertafter: "EOF"
+
+    - name: check for installation of etcd
+      stat:
+        path: '{{etcd_install_dir}}/{{etcd_install_name}}'
+      changed_when: false
+      register: etcd_binary_dir
+
+    - when: not etcd_binary_dir.stat.exists
+      block:
+        - name: download etcd
+          get_url:
+            url: '{{etcd_tgz_url}}'
+            dest: /tmp/{{etcd_tgz}}
+            checksum: '{{etcd_checksum}}'
+            timeout: '{{etcd_download_timeout_seconds}}'
+            mode: 0644
+          environment:
+            http_proxy: "{{ lookup('env','http_proxy') }}"
+            https_proxy: "{{ lookup('env','https_proxy') }}"
+        - name: unarchive etcd
+          unarchive:
+            remote_src: yes
+            src: /tmp/{{etcd_tgz}}
+            dest: '{{etcd_install_dir}}'
+            creates: '{{etcd_install_dir}}/{{etcd_install_name}}'
+      always:
+        - name: delete archive
+          file:
+            path: /tmp/{{etcd_tgz}}
+            state: absent
+
+    - name: link etcdctl
+      file:
+        src: '{{etcd_install_dir}}/{{etcd_install_name}}/{{item}}'
+        dest: '{{etcd_install_dir}}/{{item}}'
+        state: link
+      with_items:
+        - etcdctl
+        #- etcd

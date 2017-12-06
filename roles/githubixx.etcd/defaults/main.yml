@@ -1,0 +1,29 @@
+---
+local_cert_dir: /etc/cfssl
+
+etcd_version: 3.2.10
+etcd_client_port: 2379
+etcd_peer_port: 2380
+etcd_initial_cluster_token: etcd-cluster-0
+etcd_initial_cluster_state: new
+etcd_name: etcd
+etcd_conf_dir: /etc/etcd
+etcd_download_dir: /opt/etcd
+etcd_bin_dir: /usr/local/bin
+etcd_data_dir: /var/lib/etcd
+
+etcd_platform: linux-amd64
+etcd_mirror: https://github.com/coreos/etcd/releases/download
+etcd_install_dir: /home/vagrant/bin
+
+etcd_checksums:
+  linux-amd64: sha256:3f889e6e6ddf73781b14fa40bd4e99eb5ffcbff588a750d3b23517667bffc834
+
+etcd_download_timeout_seconds: 600
+
+etcd_install_name : etcd-v{{etcd_version}}-{{etcd_platform}}
+etcd_tgz : 'etcd-v{{etcd_version}}-{{etcd_platform}}.tar.gz'
+
+# https://github.com/coreos/etcd/releases/download/v3.2.10/etcd-v3.2.10-linux-amd64.tar.gz
+etcd_tgz_url : '{{etcd_mirror}}/v{{etcd_version}}/{{etcd_tgz}}'
+etcd_checksum: '{{etcd_checksums[etcd_platform]}}'

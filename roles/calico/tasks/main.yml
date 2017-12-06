@@ -1,0 +1,96 @@
+---
+# tasks file for calico
+- name: check wheter the calicoctl binary is already downloaded
+  stat:
+    path: /home/vagrant/calicoctl-{{ calicoctl_version }}
+  register: calicoctl_stat
+
+- name: download the calicoctl binary
+  get_url:
+    url: "https://github.com/projectcalico/calicoctl/releases/download/{{ calicoctl_version }}/calicoctl"
+    dest: /home/vagrant/calicoctl-{{ calicoctl_version }}
+    mode: 0755
+  when: not calicoctl_stat.stat.exists
+  environment:
+    http_proxy: "{{ lookup('env','http_proxy') }}"
+    https_proxy: "{{ lookup('env','https_proxy') }}"
+
+- name: Create bin directory
+  file:
+    path: /home/vagrant/bin
+    state: directory
+    owner: vagrant
+    group: vagrant
+    recurse: yes
+  become: true
+
+- name: create a link in the bin directory to the binary
+  file:
+    src: /home/vagrant/calicoctl-{{ calicoctl_version }}
+    dest: /home/vagrant/bin/calicoctl
+    state: link
+
+- name: record output of calicoctl command as input for creating a systemd set-up
+  command: "/home/vagrant/bin/calicoctl node run --init-system --dryrun"
+  register: calicoctl_output
+  environment:
+    ETCD_ENDPOINTS: "{%- for host in groups['etcd_nodes'] -%}http://{{ hostvars[host].ansible_host }}:2379{% if not loop.last %},{% endif %}{%- endfor -%}"
+
+- name: construct calico docker command
+  set_fact:
+    calico_docker_command: "{% set list = calicoctl_output.stdout.split('\n') %} {{ list[2] }}"
+
+- name: debug output calicoctl_output
+  debug:
+    msg: "{{ calico_docker_command | trim }}"
+
+- name: ensure that the calico docker container is gone
+  docker_container:
+    name: calico-node
+    state: absent
+
+- name: start the calico docker container
+  # shell: "docker run -d --net=host --privileged --name=calico-node -e IP={{ hostvars[inventory_hostname].ansible_host }}/24 -e NODENAME={{ inventory_hostname }} -e ETCD_ENDPOINTS={%- for host in groups['etcd_nodes'] -%}http://{{ hostvars[host].ansible_host }}:2379{% if not loop.last %},{% endif %}{%- endfor -%}{{ ' '}}  -e CALICO_NETWORKING_BACKEND=bird -e CALICO_LIBNETWORK_ENABLED=true -v /var/log/calico:/var/log/calico -v /var/run/calico:/var/run/calico -v /lib/modules:/lib/modules -v /run:/run -v /run/docker/plugins:/run/docker/plugins -v /var/run/docker.sock:/var/run/docker.sock quay.io/calico/node:latest"
+  # shell: "docker run -d --net=host --privileged --name=calico-node -e CALICO_LIBNETWORK_LABEL_ENDPOINTS=true  -e IP={{ hostvars[inventory_hostname].ansible_host }}/24 -e NODENAME={{ inventory_hostname }} -e ETCD_ENDPOINTS={%- for host in groups['etcd_nodes'] -%}http://{{ hostvars[host].ansible_host }}:2379{% if not loop.last %},{% endif %}{%- endfor -%}{{ ' '}}  -e CALICO_NETWORKING_BACKEND=bird -e CALICO_LIBNETWORK_ENABLED=true -v /var/log/calico:/var/log/calico -v /var/run/calico:/var/run/calico -v /lib/modules:/lib/modules -v /run:/run -v /run/docker/plugins:/run/docker/plugins -v /var/run/docker.sock:/var/run/docker.sock quay.io/calico/node:latest"
+  shell: "docker run -d --net=host --privileged --name=calico-node -e CALICO_LIBNETWORK_CREATE_PROFILES=false -e FELIX_DEFAULTENDPOINTTOHOSTACTION=ACCEPT -e IP={{ hostvars[inventory_hostname].ansible_host }}/24 -e NODENAME={{ inventory_hostname }} -e ETCD_ENDPOINTS={%- for host in groups['etcd_nodes'] -%}http://{{ hostvars[host].ansible_host }}:2379{% if not loop.last %},{% endif %}{%- endfor -%}{{ ' '}}  -e CALICO_NETWORKING_BACKEND=bird -e CALICO_LIBNETWORK_ENABLED=true -v /var/log/calico:/var/log/calico -v /var/run/calico:/var/run/calico -v /lib/modules:/lib/modules -v /run:/run -v /run/docker/plugins:/run/docker/plugins -v /var/run/docker.sock:/var/run/docker.sock quay.io/calico/node:latest"
+
+- name: calico ipPool.conf
+  template: src=ipPool.conf dest=/home/vagrant/ipPool.conf
+
+- name: calico ipPool.sh
+  template:
+    src: ipPool.sh
+    dest: /home/vagrant/ipPool.sh
+    mode: "0755"
+
+- name: apply calico ipPool.conf
+  shell: "/home/vagrant/ipPool.sh"
+
+# https://github.com/projectcalico/calico/blob/master/hack/remove-calico-policy/remove-calico-policy.sh
+- name: download the remove-calico-policy.sh script
+  template:
+    src: remove-calico-policy.sh
+    dest: /home/vagrant/bin/remove-calico-policy.sh
+    mode: "0755"
+
+- name: generate the calico-profile.yml to allow all traffic
+  template:
+    src: calico-profile.yml
+    dest: /home/vagrant/calico-profile.yml
+    mode: "0644"
+
+- name: apply calico-profile.yml
+  shell: "/home/vagrant/bin/calicoctl apply -f calico-profile.yml"
+  environment:
+    ETCD_ENDPOINTS: "{%- for host in groups['etcd_nodes'] -%}http://{{ hostvars[host].ansible_host }}:2379{% if not loop.last %},{% endif %}{%- endfor -%}"
+
+- name: generate the calico-policy.yml to allow all traffic
+  template:
+    src: calico-policy.yml
+    dest: /home/vagrant/calico-policy.yml
+    mode: "0644"
+
+- name: apply calico-policy.yml
+  shell: "/home/vagrant/bin/calicoctl apply -f calico-policy.yml"
+  environment:
+    ETCD_ENDPOINTS: "{%- for host in groups['etcd_nodes'] -%}http://{{ hostvars[host].ansible_host }}:2379{% if not loop.last %},{% endif %}{%- endfor -%}"
