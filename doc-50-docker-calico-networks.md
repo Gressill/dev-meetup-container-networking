@@ -103,4 +103,12 @@ You can now also ping this second container from node 1, e.g. in my case I can e
 
 The networking part of calico works quite differently from the overlay network. The calico network is fully routed and does not rely on tunneling technology like `vxlan`. The running calico agents on every host run the [Border Gateway Protocol (BGP)](https://en.wikipedia.org/wiki/Border_Gateway_Protocol) to distribute the routing information in the cluster. This approach should make calico as fast as "normal" networks. You should do your own benchmarks, though, perhaps using the [Solarwinds](https://github.com/solarwinds)' [Container Network Performance Tool](https://github.com/solarwinds/containers/tree/master/cnpt) or similar.
 
+Calico basically just installes one `veth` pair between the container and the surrounding host and does everything else via routing. Calico gives every host a `/26` network, so that you can have 64 containers per host. I guess this is configurable, but I did not check it. I also would not see why it would be a problem to have several smaller networks per host. But this may be useful if you have many containers per host to limit the amount of routing configuration that would need to be transported via BGP and set-up on the nodes.
+
+How the communication mechanism between the container and the host is working in detail is quite well explained in:
+
+* 2017-05-06: [Getting started with Calico on Kubernetes](http://www.dasblinkenlichten.com/getting-started-with-calico-on-kubernetes/)
+
+This is also explaining the mechanism with `proxy-arp` that the inside of the container uses to communicate with the outside.
+
 ## Appendix: iptables
