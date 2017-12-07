@@ -1,5 +1,5 @@
 
-## Using calico for docker container Networking
+## Using calico for docker container networking
 
 ### Set-up
 
@@ -111,4 +111,48 @@ How the communication mechanism between the container and the host is working in
 
 This is also explaining the mechanism with `proxy-arp` that the inside of the container uses to communicate with the outside.
 
-## Appendix: iptables
+## Appendices:
+
+### iptables
+
+Calico makes heavy use of Linux `iptables` as a distribute firewall and for policy control. As this was my first deeper contact with `iptables` I learned quite a bit on how to deal with it.
+
+The article [Linux Firewall Tutorial: IPTables Tables, Chains, Rules Fundamentals](http://www.thegeekstuff.com/2011/01/iptables-fundamentals) from 2011-01-24 was quite helpful in getting a general understanding of how iptables works. To get a complete overview of what is happening in the `iptables` I found the `iptables-save` command extremely useful:
+
+    sudo iptables-savesudo iptables-save
+
+This will dump the complete content of all tables, all chains and all rules to `stdout`. You can save the rules (and edit them) and later restore them via `iptables-restore`.
+
+Further debugging of the iptables rules is explained in the article [iptables debugging](http://backreference.org/2010/06/11/iptables-debugging/) from 2010-06-11. At first I could not make the trace output appear in the log files, e.g. `/var/log/syslog`. The older articles all speak about loading the kernel module `ipt_LOG`, but this module is not present on newer systems. It took me quite some time to figure this out. In newer systems you need to load the kernel module `nf_log_ipv4`:
+
+    modprobe nf_log_ipv4
+    sysctl net.netfilter.nf_log.2=nf_log_ipv4
+
+The ansible playbooks you used to set-up the two node cluster do this already for you and make sure that the module is loaded after a reboot plus the configuration changes are applied accordingly. I found this piece of information in the following answer on [serverfault](https://serverfault.com/a/739411). Once you have loaded this module and you have followed the instructions in the "iptables debugging" article the log messages will show up in `/var/log/syslog`. Be aware, though, that as long as the calico node agent is running it constantly rewrites the rules. So in order to have control over this I dumped the iptables rules while the agent was running, stopped the agent and then reapplied the rules. Stopping the agent will not harm the networking set-up of the existing containers. Only new containers will not get the right configuration. After that you can then debug all details that are going on in the `iptables` set-up.
+
+The following picture is quite useful to understand the path that network packets go through the system:
+
+<img src="http://inai.de/images/nf-packet-flow.png" width="800">
+
+
+### tcpdump
+
+`tcpdump` is also very useful to see what is going on. The basic command will look something like:
+
+    sudo tcpdump -i cali9ee731f7898 -nn
+
+You can also check the proxy-arp settings for an inteface via:
+
+    cat /proc/sys/net/ipv4/conf/cali182f84bfeba/proxy_arp
+
+### calicoctl
+
+What follows are some useful command line examples on how to interact with calico via its `calicoctl` command line tool.
+
+    sudo ETCD_ENDPOINTS=http://192.168.56.101:2379 calicoctl node status
+    sudo ETCD_ENDPOINTS=http://192.168.56.101:2379 calicoctl config get asNumber
+    sudo ETCD_ENDPOINTS=http://192.168.56.101:2379 calicoctl get profiles
+    sudo ETCD_ENDPOINTS=http://192.168.56.101:2379 calicoctl get bgpPeer --scope=global
+    sudo ETCD_ENDPOINTS=http://192.168.56.101:2379 calicoctl get ipPool
+    sudo ETCD_ENDPOINTS=http://192.168.56.101:2379 calicoctl get nodes -o wide
+    sudo ETCD_ENDPOINTS=http://192.168.56.101:2379 calicoctl get node node2 -o yaml
