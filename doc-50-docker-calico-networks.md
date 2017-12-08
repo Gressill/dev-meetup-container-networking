@@ -31,7 +31,7 @@ You can see what is stored in `etcd` v2 via:
 
 And you can see what is stored in `etcd` v3 via:
 
-   ETCDCTL_API=3 etcdctl --endpoints http://192.168.56.101:2379 get --prefix=true ""
+    ETCDCTL_API=3 etcdctl --endpoints http://192.168.56.101:2379 get --prefix=true ""
 
 Calico still makes use of v2. You can check that the settings for the calico agents (which are running as docker containers) are correct via:
 

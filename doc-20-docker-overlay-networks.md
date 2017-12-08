@@ -270,7 +270,7 @@ I've read somewhere that `brctl` still has some issues with network namespaces.
 
 With the following two commands we look at the forwarding database of the links in the network namespace
 
-    vagrant@node1:~$ sudo nsenter --net=/run/docker/netns/$overlayns bridge fdb show
+    vagrant@node1:~$ sudo nsenter --net=/run/docker/netns/$overlayns /sbin/bridge fdb show
     33:33:00:00:00:01 dev br0 self permanent
     01:00:5e:00:00:01 dev br0 self permanent
     be:ff:80:f2:38:58 dev vxlan0 master br0 permanent
