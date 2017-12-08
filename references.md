@@ -50,6 +50,7 @@
   * 2017-11-14: [Part 3](http://linux-blog.anracom.com/2017/11/14/fun-with-veth-devices-linux-bridges-and-vlans-in-unnamed-linux-network-namespaces-iii/)
   * 2017-11-20: [Part 4](http://linux-blog.anracom.com/2017/11/20/fun-with-veth-devices-linux-bridges-and-vlans-in-unnamed-linux-network-namespaces-iv/)
   * 2017-11-21: [Part 5](http://linux-blog.anracom.com/2017/11/21/fun-with-veth-devices-linux-bridges-and-vlans-in-unnamed-linux-network-namespaces-v/)
+  * 2017-11-28: [Part 6](https://linux-blog.anracom.com/2017/11/28/fun-with-veth-devices-linux-bridges-and-vlans-in-unnamed-linux-network-namespaces-vi/)
 
 
 * [Vincent Bernat](https://github.com/vincentbernat) and his [network-lab](https://github.com/vincentbernat/network-lab)
