@@ -1,11 +1,14 @@
 
 # Docker and Kubernetes
 
-* Overview: [Understanding container networking](https://www.oreilly.com/ideas/understanding-container-networking)
+* 2017-06-01: [Understanding container networking](https://www.oreilly.com/ideas/understanding-container-networking) by [Brian Anderson](https://medium.com/@branderlog) and [Lee Calcote](https://en.wikipedia.org/wiki/Lee_Calcote)([github](https://github.com/leecalcote))
+* 2017-05-01: [The Tale of Two Container Networking Standards: CNM v. CNI](http://www.nuagenetworks.net/blog/container-networking-standards/) by [Harmeet Sahni](https://www.linkedin.com/in/harmeetsahni/)
   * Docker Container network Model: [CNM](https://github.com/docker/libnetwork/blob/master/docs/design.md)
   * Kubernetes Container Network Interface: [CNI](https://github.com/containernetworking/cni)
+    * 2017-06-22: [Let's create a workflow for writing CNI plugins (including writing your first CNI plugin!)](http://dougbtv.com/nfvpe/2017/06/22/cni-tutorial/)
   * [Solarwinds](https://github.com/solarwinds)' [Container Network Performance Tool](https://github.com/solarwinds/containers/tree/master/cnpt)
-
+* 2016-01-14: [Why Kubernetes doesn’t use libnetwork](http://blog.kubernetes.io/2016/01/why-Kubernetes-doesnt-use-libnetwork.html)
+  * 2015-08-20: [Network Plugins definition (was "Kicking off the network SIG")](https://groups.google.com/forum/#!topic/kubernetes-sig-network/5MWRPxsURUw): We investigated writing a "bridge" CNM driver for Docker that ran CNI drivers. This turned out to be very complicated. First, the CNM and CNI models are very different, so none of the "methods" lined up. We still have the global vs. local and key-value issues discussed above. Assuming this driver would declare itself local, we have to get info about logical networks from Kubernetes.
 
 * 2017-05-08: [Deep Dive in Docker Overlay Networks](https://www.youtube.com/watch?v=b3XDl0YsVsg) YouTube presentation by [Laurent Bernaille](https://github.com/lbernail)
   * [github](https://github.com/lbernail/dockeroverlays)
@@ -33,8 +36,9 @@
 * [Thomas Graf](https://github.com/tgraf), [linkedin](https://www.linkedin.com/in/thomas-graf-73104547/?locale=de_DE), [covalent.io](http://covalent.io/), [cilium.io](https://www.cilium.io/)
   * 2015-08-18: [linux-kernel-networking-walkthrough](https://www.slideshare.net/ThomasGraf5/linuxcon-2015-linux-kernel-networking-walkthrough)
   * 2016-08-23: [linux-networking-explained](https://www.slideshare.net/ThomasGraf5/linux-networking-explained)
-* [Container Networking Deep Dive](http://events.linuxfoundation.org/sites/events/files/slides/Container%20Networking%20Deep%20Dive.pdf)
-* [Demystifying container networking](http://blog.mbrt.it/2017-10-01-demystifying-container-networking/)
+* 2017-04-03: [Container Networking Deep Dive](http://events.linuxfoundation.org/sites/events/files/slides/Container%20Networking%20Deep%20Dive.pdf) by [Gaetano Borgione](https://www.linkedin.com/in/gaetano-borgione-2392bb1/).
+* 2017-10-01: [Demystifying container networking](http://blog.mbrt.it/2017-10-01-demystifying-container-networking/) by [Michele Bertasi](https://github.com/mbrt)
+* 2016-04-10: [Network namespaces](https://blogs.igalia.com/dpino/2016/04/10/network-namespaces/) by [Diego Pino](https://github.com/dpino)
 
 ## vxlan, veth, bridges, namespaces, L2, L3, etc.
 
@@ -70,10 +74,22 @@
   * Webinar: [Leaf-and-Spine Fabric Architectures](http://www.ipspace.net/Leaf-and-Spine_Fabric_Architectures)
   * Webinar: [Docker Networking Fundamentals](http://www.ipspace.net/Docker_Networking_Fundamentals)
 
-* [Nspawn OpenStack with OpenStack-Ansible](https://cloudnull.io/2017/06/nspawning-openstack-ansible/) explains how to use macvlan. It also talks about having file-system barriers between containers.
-  * [Using networkd to set-up the network](https://cloudnull.io/2017/06/networkd-for-nspawn-with-openstack-ansible/)
-  * [macvlan host to guest connection](http://noyaudolive.net/2012/05/09/lxc-and-macvlan-host-to-guest-connection/)
-  * [macvlan and ipvlan](https://sreeninet.wordpress.com/2016/05/29/macvlan-and-ipvlan/)
+* 2017-06-20: [Nspawn OpenStack with OpenStack-Ansible](https://cloudnull.io/2017/06/nspawning-openstack-ansible/) by [Kevin Carter](https://www.linkedin.com/in/mrkcarter/) explains how to use macvlan. It also talks about having file-system barriers between containers.
+  * 2017-06-28: [Using networkd to set-up the network](https://cloudnull.io/2017/06/networkd-for-nspawn-with-openstack-ansible/)
+  * 2012-05-09: [macvlan host to guest connection](http://noyaudolive.net/2012/05/09/lxc-and-macvlan-host-to-guest-connection/)
+
+* Container Networking Performance:
+  * 2016-07-13: [Networking Containers in an Ultra-Low-Latency Environment](https://de.slideshare.net/deitcher/linuxconcontainercon-japan-2016-networking-containers-in-ultralow-latency-environments) by [Avi Deitcher](https://github.com/deitch)
+    * [network-tests](https://github.com/deitch/network-tests) on github
+  * 2016-05-29: [macvlan and ipvlan](https://sreeninet.wordpress.com/2016/05/29/macvlan-and-ipvlan/) by [Sreenivas Makam](https://github.com/smakam).
+  * 2017-12-04: [Announcing cni-ipvlan-vpc-k8s: IPvlan overlay-free Kubernetes Networking in AWS](https://eng.lyft.com/announcing-cni-ipvlan-vpc-k8s-ipvlan-overlay-free-kubernetes-networking-in-aws-95191201476e) by [Paul Fisher](https://github.com/paulnivin)
+    * project page on github: [cni-ipvlan-vpc-k8s](https://github.com/lyft/cni-ipvlan-vpc-k8s)
+      * [k8s-vpcnet](https://github.com/lstoll/k8s-vpcnet)
+      * [amazon-vpc-cni-k8s](https://github.com/aws/amazon-vpc-cni-k8s)
+      * This particular trick of "IP unnumbered configuration" is documented in [RFC5309](https://tools.ietf.org/html/rfc5309).
+  * 2015-02-14: [IPVLAN – The beginning](https://people.netfilter.org/pablo/netdev0.1/papers/IPVLAN-The-beginning.pdf) by [Mahesh Bandewar](https://www.linkedin.com/in/mahesh-bandewar-8556871/?locale=de_DE) and  [Eric Dumazet](https://www.linkedin.com/in/eric-dumazet-ba252942/) explains the reasoning behind developing ipvlan: The commonly used method to connect namespaces to the outside world without going through the forwarding set up on the host used to be the macvlan. This setup is simple and efficient except when the next-hop devices apply policies barring host to act like a layer2-switching device. This is especially problematic where the connected next-hop, e.g. switch is expecting frames from a specific mac for a given port. In a situation like this the macvlan setup does not work. The host will either have to fall-back to nonefficient forwarding methods or something else. IPvlan was designed to address this specific need along with few other mentioned in next few sections.
+
+
 
 ## Simulation and Testing
 
