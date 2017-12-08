@@ -1,14 +1,16 @@
 
 # Docker and Kubernetes
 
-* 2017-06-01: [Understanding container networking](https://www.oreilly.com/ideas/understanding-container-networking) by [Brian Anderson](https://medium.com/@branderlog) and [Lee Calcote](https://en.wikipedia.org/wiki/Lee_Calcote)([github](https://github.com/leecalcote))
-* 2017-05-01: [The Tale of Two Container Networking Standards: CNM v. CNI](http://www.nuagenetworks.net/blog/container-networking-standards/) by [Harmeet Sahni](https://www.linkedin.com/in/harmeetsahni/)
-  * Docker Container network Model: [CNM](https://github.com/docker/libnetwork/blob/master/docs/design.md)
-  * Kubernetes Container Network Interface: [CNI](https://github.com/containernetworking/cni)
-    * 2017-06-22: [Let's create a workflow for writing CNI plugins (including writing your first CNI plugin!)](http://dougbtv.com/nfvpe/2017/06/22/cni-tutorial/)
-  * [Solarwinds](https://github.com/solarwinds)' [Container Network Performance Tool](https://github.com/solarwinds/containers/tree/master/cnpt)
-* 2016-01-14: [Why Kubernetes doesn’t use libnetwork](http://blog.kubernetes.io/2016/01/why-Kubernetes-doesnt-use-libnetwork.html)
-  * 2015-08-20: [Network Plugins definition (was "Kicking off the network SIG")](https://groups.google.com/forum/#!topic/kubernetes-sig-network/5MWRPxsURUw): We investigated writing a "bridge" CNM driver for Docker that ran CNI drivers. This turned out to be very complicated. First, the CNM and CNI models are very different, so none of the "methods" lined up. We still have the global vs. local and key-value issues discussed above. Assuming this driver would declare itself local, we have to get info about logical networks from Kubernetes.
+* Overview
+  * 2017-06-01: [Understanding container networking](https://www.oreilly.com/ideas/understanding-container-networking) by [Brian Anderson](https://medium.com/@branderlog) and [Lee Calcote](https://en.wikipedia.org/wiki/Lee_Calcote)([github](https://github.com/leecalcote))
+  * 2017-05-01: [The Tale of Two Container Networking Standards: CNM v. CNI](http://www.nuagenetworks.net/blog/container-networking-standards/) by [Harmeet Sahni](https://www.linkedin.com/in/harmeetsahni/)
+    * Docker Container network Model: [CNM](https://github.com/docker/libnetwork/blob/master/docs/design.md)
+    * Kubernetes Container Network Interface: [CNI](https://github.com/containernetworking/cni)
+      * 2017-06-22: [Let's create a workflow for writing CNI plugins (including writing your first CNI plugin!)](http://dougbtv.com/nfvpe/2017/06/22/cni-tutorial/)
+    * [Solarwinds](https://github.com/solarwinds)' [Container Network Performance Tool](https://github.com/solarwinds/containers/tree/master/cnpt)
+  * 2016-01-14: [Why Kubernetes doesn’t use libnetwork](http://blog.kubernetes.io/2016/01/why-Kubernetes-doesnt-use-libnetwork.html)
+    * 2015-08-20: [Network Plugins definition (was "Kicking off the network SIG")](https://groups.google.com/forum/#!topic/kubernetes-sig-network/5MWRPxsURUw): We investigated writing a "bridge" CNM driver for Docker that ran CNI drivers. This turned out to be very complicated. First, the CNM and CNI models are very different, so none of the "methods" lined up. We still have the global vs. local and key-value issues discussed above. Assuming this driver would declare itself local, we have to get info about logical networks from Kubernetes.
+
 
 * 2017-05-08: [Deep Dive in Docker Overlay Networks](https://www.youtube.com/watch?v=b3XDl0YsVsg) YouTube presentation by [Laurent Bernaille](https://github.com/lbernail)
   * [github](https://github.com/lbernail/dockeroverlays)
