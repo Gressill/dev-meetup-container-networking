@@ -41,6 +41,10 @@ Node1: Shell 3:
     echo 1 | sudo tee -a /proc/sys/net/ipv4/neigh/eth0/app_solicit
     ip monitor neigh
 
+#### Netlink
+
+This is more a side topic, but may be quite handy when you need it. The above monitoring functionality uses the [netlink](https://en.wikipedia.org/wiki/Netlink) API to talk to the Linux kernel. Netlink provides a standard socket-based interface for userspace processes. You can see the raw netlink socket interface in action in one of [Laurent Bernaille](https://github.com/lbernail)'s original example [watch.py](https://github.com/lbernail/dockeroverlays/blob/master/python/watch.py). If you want to experiment around with this functionality it is easier to use the [pyroute2](http://docs.pyroute2.org/index.html) library. Laurent Bernaille's github project contains also some examples showing the use of pyroute2: [python](https://github.com/lbernail/dockeroverlays/tree/master/python).
+
 ### Creating the overlay network
 
 Node1:
